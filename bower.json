@@ -1,0 +1,31 @@
+{
+  "name": "The Wanted",
+  "homepage": "www.playr2.com.br",
+  "authors": [
+    "Rafael Malheiros <rafael_malheiros@hotmail.com>"
+  ],
+  "description": "Site do Jogo The Wanted",
+  "main": "index.html",
+  "moduleType": [],
+  "keywords": [
+    "game",
+    "the",
+    "wanted",
+    "augmented",
+    "reality",
+    "unity",
+    "ios",
+    "android",
+    "iphone",
+    "map",
+    "gta"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "bower_components"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.4"
+  }
+}
