@@ -27,6 +27,8 @@
   ],
   "dependencies": {
     "jquery": "~2.1.4",
-    "normalize-css": "normalize.css#~3.0.3"
+    "normalize-css": "normalize.css#~3.0.3",
+    "skrollr": "~0.6.30",
+    "scrollmagic": "ScrollMagic#~2.0.5"
   }
 }

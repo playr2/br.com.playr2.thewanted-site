@@ -1,26 +1,148 @@
-<!doctype html>
-
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
 
   <title>The Wanted - Quem define suas regras no mundo real é você</title>
   <meta name="description" content="Quer fazer o que hoje? hackear alguém? assaltar um carro forte? roubar um caixa eletronico? Você escolhe o que vai fazer no mundo real!">
   <meta name="author" content="Rafael da Silva Malheiros">
 
-  <link rel="stylesheet" href="bower_components/normalize-css/normalize.css">
+  <link href='https://fonts.googleapis.com/css?family=Permanent+Marker|Nothing+You+Could+Do|Waiting+for+the+Sunrise|Reenie+Beanie' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="css/index.css">
 </head>
 
 <body>
 
-  <div id="city"></div>
-
-  <div id="phone-wrapper">
-    <img id="phone" src="img/phone.png" />
+  <section id="main">
+    <div id="city"></div>
     <div id="phone-display"></div>
-  </div>
+    <div id="phone"></div>
 
+    <p id="sem-lei" class="rolando">Esta cidade é minha...</p>
+  </section>
+
+
+  <script src="bower_components/jquery/dist/jquery.min.js"></script>
+  <script src="bower_components/scrollmagic/scrollmagic/minified/ScrollMagic.min.js"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/1.14.2/TweenMax.min.js"></script>
+  <script src="bower_components/scrollmagic/scrollmagic/uncompressed/plugins/animation.gsap.js"></script>
+  <script src="bower_components/scrollmagic/scrollmagic/uncompressed/plugins/debug.addIndicators.js"></script>
+
+  <script>
+
+  var city = {}, wnd = {};
+  city.width      = 2910;
+  city.height     = 1940;
+  city.apectRatio = city.width / city.height;
+  city.heightWndMultiplier = city.width / city.height;
+
+  updateOnResize();
+  $(window).resize(updateOnResize);
+
+  var semLeiIn = new TimelineMax()
+      .add(TweenMax.fromTo("#sem-lei", 1, {top: $(window).height()}, {top: 0 }, {ease: SlowMo.ease.config(0.7, 0.7, false)}));
+
+  var semLeiOut = new TimelineMax()
+      .add(TweenMax.to("#sem-lei", 1, {top: -100}, {top: 0, ease:Cubic.easeIn}));
+
+  var citySlide = new TimelineMax()
+      .add(TweenMax.to("#city", 1, {top: -100 * city.heightWndMultiplier, ease:Cubic.easeOut}));
+
+  var phoneSlide = new TimelineMax()
+      .add(TweenMax.to(["#phone", "#phone-display"], 1, {height: "600px"}));
+
+  var phoneZoom = new TimelineMax()
+      .add(TweenMax.to("#phone-display", 1, {backgroundSize: city.width+'px '+ city.height+'px'}));
+
+
+
+  var controller = new ScrollMagic.Controller();
+
+  var mainPin = new ScrollMagic.Scene({
+    duration: 10000
+  })
+  .setPin("section#main")
+  .addIndicators({name: "main"})
+  .addTo(controller);
+
+
+  new ScrollMagic.Scene({
+    duration:400
+  })
+  .setTween(semLeiIn)
+  .addTo(controller);
+
+  new ScrollMagic.Scene({
+    duration:200,
+    offset:400
+  })
+  .setTween(citySlide)
+  .addIndicators({name: "citySlide"})
+  .addTo(controller);
+
+  new ScrollMagic.Scene({
+    duration:100,
+    offset:850
+  })
+  .setTween(semLeiOut)
+  .addTo(controller);
+
+  new ScrollMagic.Scene({
+    duration:300,
+    offset:900
+  })
+  .setTween(phoneSlide)
+  .addIndicators({name: "phoneSlide"})
+  .addTo(controller);
+
+  new ScrollMagic.Scene({
+    duration:100,
+    offset:1400
+  })
+  .setTween(phoneZoom)
+  .addIndicators({name: "phoneZoom"})
+  .addTo(controller);
+
+
+
+
+  function updateOnResize() {
+      wnd.width      = $(window).width();
+      console.log('wnd.width', wnd.width);
+
+      wnd.height     = $(window).height();
+      console.log('wnd.height', wnd.height);
+
+      wnd.apectRatio = wnd.width / wnd.height;
+      console.log('wnd.apectRatio', wnd.apectRatio);
+
+      var aspectDiff = wnd.apectRatio - city.apectRatio;
+      console.log('aspectDiff', aspectDiff);
+
+      var fill = calculateAspectRatioFill(city.width, city.height, wnd.width, wnd.height);
+      console.log('fill', fill);
+
+      var diff = fill.height - wnd.height;
+      console.log('diff', diff);
+
+      if(diff < 100) {
+          fill.height = fill.height + 100;
+          fill.width = fill.width + 100 * city.apectRatio;
+      } else {
+          city.heightWndMultiplier = diff / 100;
+      }
+
+      $('#city').css('background-size', fill.width+'px '+fill.height+'px');
+      $('#city').height(fill.height);
+      $('#phone-display').css('background-size', fill.width+'px '+fill.height+'px');
+  }
+
+  function calculateAspectRatioFill(srcWidth, srcHeight, maxWidth, maxHeight) {
+      var ratio = Math.max(maxWidth / srcWidth, maxHeight / srcHeight);
+      return { width: srcWidth*ratio, height: srcHeight*ratio };
+  }
+  </script>
 
 </body>
 </html>
